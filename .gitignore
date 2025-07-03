@@ -1,0 +1,6 @@
+*.swp
+*.*~
+*.swo
+tmp/
+node_modules/
+test*
