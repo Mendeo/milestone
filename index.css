@@ -1,0 +1,47 @@
+body
+{
+	font-family: "PT Sans", sans-serif;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: 95vh;
+}
+p
+{
+	text-align: center;
+	padding-bottom: 3rem;
+}
+#timer
+{
+	font-size: 10rem;
+}
+#end_date
+{
+	font-size: xx-large;
+}
+.empty_space
+{
+	height: 20rem;
+}
+#progress
+{
+	width: 70%;
+	height: 2rem;
+	background-image: linear-gradient(to right, green,yellow, red);
+	border: 2px solid black ;
+}
+#progress > div
+{
+	width: 30%;
+	height: 100%;
+	background-color: lightgray;
+	margin-left: auto;
+	font-size: 1.5rem;
+}
+#progress > div > span
+{
+	position: relative;
+	top: -2rem;
+	left: -1rem;
+}
