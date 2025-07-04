@@ -12,30 +12,53 @@ p
 	text-align: center;
 	padding-bottom: 3rem;
 }
+
+@media screen and (orientation: portrait)
+{
+	:root
+	{
+		--time_font_size: 10vw;
+		--end_date_font_size: 5vw;
+		--empty_space: 30vh;
+		--progress_width: 90vw;
+	}
+}
+
+@media screen and (orientation: landscape)
+{
+	:root
+	{
+		--time_font_size: 10vw;
+		--end_date_font_size: 5vw;
+		--empty_space: 30vh;
+		--progress_width: 70vw;
+	}
+}
+
 #timer
 {
-	font-size: 10rem;
-}
-#end_date
-{
-	font-size: xx-large;
+	font-size: var(--time_font_size);
 }
 .empty_space
 {
-	height: 20rem;
+	height: var(--empty_space);
+}
+#end_date
+{
+	font-size: var(--end_date_font_size);
 }
 
 .progress
 {
-	--progress_width: 70%;
 	width: var(--progress_width);
-	height: calc(var(--progress_width) * 0.1);
+	height: calc(var(--progress_width) * 0.04);
 	border: 2px solid black ;
 	padding: calc(var(--progress_width) * 0.002);
 }
 .progress__background
 {
-	background-image: repeating-linear-gradient(to right, black 0%, black 1.714%, white 1.714%, white 2%);
+	background-image: repeating-linear-gradient(to right, black 0%, black 1.6%, white 1.6%, white 2%);
+	height: 100%;
 }
 .progress__line
 {
