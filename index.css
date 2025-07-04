@@ -24,22 +24,28 @@ p
 {
 	height: 20rem;
 }
-#progress
+
+.progress
 {
-	width: 70%;
-	height: 2rem;
-	background-image: linear-gradient(to right, green,yellow, red);
+	--progress_width: 70%;
+	width: var(--progress_width);
+	height: calc(var(--progress_width) * 0.1);
 	border: 2px solid black ;
+	padding: calc(var(--progress_width) * 0.002);
 }
-#progress > div
+.progress__background
 {
-	width: 30%;
+	background-image: repeating-linear-gradient(to right, black 0%, black 1.714%, white 1.714%, white 2%);
+}
+.progress__line
+{
+	width: 32%;
 	height: 100%;
-	background-color: lightgray;
+	background-color: white;
 	margin-left: auto;
 	font-size: 1.5rem;
 }
-#progress > div > span
+.progress__line > span
 {
 	position: relative;
 	top: -2rem;
