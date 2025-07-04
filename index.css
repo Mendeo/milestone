@@ -21,6 +21,7 @@ p
 		--end_date_font_size: 5vw;
 		--empty_space: 20vh;
 		--progress_width: 90vw;
+		--percent_font_size: 0.8rem;
 	}
 }
 
@@ -32,6 +33,7 @@ p
 		--end_date_font_size: 5vw;
 		--empty_space: 20vh;
 		--progress_width: 70vw;
+		--percent_font_size: 1.4rem;
 	}
 }
 
@@ -66,13 +68,13 @@ p
 	height: 100%;
 	background-color: white;
 	margin-left: auto;
-	font-size: 1.5rem;
+	font-size: var(--percent_font_size);
 }
 .progress__line > span
 {
 	position: relative;
-	top: -2rem;
-	left: -1.8rem;
+	top: calc(-1.5 * var(--percent_font_size));
+	left: -1.5rem;
 }
 #copy_milestone_link
 {
