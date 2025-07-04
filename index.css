@@ -74,7 +74,7 @@ p
 {
 	position: relative;
 	top: calc(-1.5 * var(--percent_font_size));
-	left: -1.5rem;
+	left: calc(-1 * var(--percent_font_size));
 }
 #copy_milestone_link
 {
