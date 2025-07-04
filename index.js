@@ -3,14 +3,42 @@ const timerElement = document.getElementById('timer');
 const endDateElement = document.getElementById('end_date');
 const progressElement = document.querySelector('#progress .progress__line');
 const progressValueElement = document.querySelector('#progress .progress__line span');
-
-let endDate = localStorage.getItem('end_date');
-let startDate = localStorage.getItem('start_date');
+const milestouneLinkButton = document.getElementById('copy_milestone_link');
 
 let endTime = 0;
 let startTime = 0;
 let timeAll = 0;
 let percent = 0;
+let startDate = null;
+let endDate = null;
+let milestouneLink = '';
+
+if (location.search)
+{
+	const params = location.search.slice(1).split('&');
+	for (let pp of params)
+	{
+		const p = pp.split('=');
+		if (p[0] === 's')
+		{
+			startTime = Number(p[1]) * 1000;
+		}
+		else if (p[0] === 'e')
+		{
+			endTime = Number(p[1]) * 1000;
+		}
+	}
+	startDate = new Date(startTime);
+	endDate = new Date(endTime);
+	localStorage.setItem('start_date', startDate);
+	localStorage.setItem('end_date', endDate);
+	location.replace(location.origin);
+}
+else
+{
+	endDate = localStorage.getItem('end_date');
+	startDate = localStorage.getItem('start_date');
+}
 
 if (startDate && endDate)
 {
@@ -29,12 +57,18 @@ if (startDate && endDate)
 	{
 		updateEndDate(endDate);
 		updateProgress(percent);
+		createMilestouneLink(startTime, endTime);
 	}
 }
 else
 {
 	startNew();
 }
+
+milestouneLinkButton.addEventListener('click', () =>
+{
+	navigator.clipboard.writeText(milestouneLink);
+});
 
 update(timeAll);
 setInterval(() =>
@@ -75,6 +109,7 @@ function startNew()
 	
 	updateEndDate(endDate);
 	updateProgress(percent);
+	createMilestouneLink(startTime, endTime);
 	
 	localStorage.setItem('start_date', startDate);
 	localStorage.setItem('end_date', endDate);
@@ -87,6 +122,10 @@ function updateProgress(percent)
 {
 	progressElement.style.width = `${100 - percent}%`;
 	progressValueElement.innerText = percent + '%'
+}
+function createMilestouneLink(startTime, endTime)
+{
+	milestouneLink = `${location.origin}?s=${startTime / 1000}&e=${endTime / 1000}`;
 }
 function msToString(time)
 {

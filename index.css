@@ -19,7 +19,7 @@ p
 	{
 		--time_font_size: 10vw;
 		--end_date_font_size: 5vw;
-		--empty_space: 30vh;
+		--empty_space: 20vh;
 		--progress_width: 90vw;
 	}
 }
@@ -30,7 +30,7 @@ p
 	{
 		--time_font_size: 10vw;
 		--end_date_font_size: 5vw;
-		--empty_space: 30vh;
+		--empty_space: 20vh;
 		--progress_width: 70vw;
 	}
 }
@@ -73,4 +73,8 @@ p
 	position: relative;
 	top: -2rem;
 	left: -1rem;
+}
+#copy_milestone_link
+{
+	margin-bottom: 0.5rem;
 }
