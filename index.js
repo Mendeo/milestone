@@ -1,6 +1,8 @@
 'use strict';
 const timerElement = document.getElementById('timer');
 const endDateElement = document.getElementById('end_date');
+const progressElement = document.querySelector('#progress .progress__line');
+const progressValueElement = document.querySelector('#progress .progress__line span');
 
 let endDate = localStorage.getItem('end_date');
 
@@ -12,23 +14,37 @@ if (endDate)
 }
 else
 {
-	const week1 = 604800000;
+	const week1 = 10000;//604800000;
 	const mean = 7 * week1 //7 недель.
 	const sigma = week1 / 1.644853627; //90% Интервал.
 	time = getNormalDistr(mean, sigma);
 	endDate = new Date(Date.now() + time);
-	localStorage.setItem('end_date', endDate);
+	//localStorage.setItem('end_date', endDate);
 }
 time = Math.floor(time / 1000) * 1000;
 
 endDateElement.innerText = endDate.toLocaleString('ru-RU', { weekday: 'long', year:'numeric', month:'long', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' });
 
-timerElement.innerText = msToString(time);
+let timePassed = 0;
+let previousPercent = 0;
+update(time, timePassed);
 setInterval(() =>
 {
-	time -= 1000;
-	timerElement.innerText = msToString(time);
+	timePassed += 1000;
+	update(time, timePassed);
 }, 1000);
+
+function update(timeAll, timePassed)
+{
+	timerElement.innerText = msToString(timeAll - timePassed);
+	const currentPercent = timePassed * 100 / timeAll;
+	if (currentPercent - previousPercent >= 0.01)
+	{
+		previousPercent = Math.floor(currentPercent, 2);
+		progressElement.style.width = `${100 - previousPercent}%`;
+		progressValueElement.innerText = Math.floor(currentPercent, 1) + '%'
+	}
+}
 
 function msToString(time)
 {
