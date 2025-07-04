@@ -47,7 +47,7 @@ if (startDate && endDate)
 	startTime = startDate.getTime();
 	endTime = endDate.getTime();
 	timeAll = endTime - startTime;
-	percent = Math.floor((Date.now() - startTime) * 100 / timeAll, 1);
+	percent = Math.round((Date.now() - startTime) * 1000 / timeAll) / 10;
 
 	if (endTime - Date.now() < 0)
 	{
@@ -88,13 +88,13 @@ function update(timeAll)
 	const currentPercent = timePassed * 100 / timeAll;
 	if (currentPercent - percent >= 0.1)
 	{
-		percent = Math.floor(currentPercent, 1);
+		percent = Math.round(currentPercent * 10) / 10;
 		updateProgress(percent);
 	}
 }
 function startNew()
 {
-	const week1 = 604800000;
+	const week1 = 100000;//604800000;
 	const mean = 7 * week1 //7 недель.
 	const sigma = week1 / 1.644853627; //90% Интервал.
 
@@ -121,7 +121,9 @@ function updateEndDate(endDate)
 function updateProgress(percent)
 {
 	progressElement.style.width = `${100 - percent}%`;
-	progressValueElement.innerText = percent + '%'
+	let percentStr = percent.toString();
+	percentStr = percentStr.indexOf('.') !== -1 ? percentStr.replace('.', ',') + '%' : percentStr + ',0%';
+	progressValueElement.innerText = percentStr;
 }
 function createMilestouneLink(startTime, endTime)
 {
