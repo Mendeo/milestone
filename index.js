@@ -2,12 +2,25 @@
 const timerElement = document.getElementById('timer');
 const endDateElement = document.getElementById('end_date');
 
-const week1 = 604800000;
-const mean = 7 * week1 //7 недель.
-const sigma = week1 / 1.644853627; //90% Интервал.
-let time = getNormalDistr(mean, sigma);
+let endDate = localStorage.getItem('end_date');
+
+let time = 0;
+if (endDate)
+{
+	endDate = new Date(endDate);
+	time = endDate.getTime() - Date.now();
+}
+else
+{
+	const week1 = 604800000;
+	const mean = 7 * week1 //7 недель.
+	const sigma = week1 / 1.644853627; //90% Интервал.
+	time = getNormalDistr(mean, sigma);
+	endDate = new Date(Date.now() + time);
+	localStorage.setItem('end_date', endDate);
+}
 time = Math.floor(time / 1000) * 1000;
-const endDate = new Date(Date.now() + time);
+
 endDateElement.innerText = endDate.toLocaleString('ru-RU', { weekday: 'long', year:'numeric', month:'long', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' });
 
 timerElement.innerText = msToString(time);
