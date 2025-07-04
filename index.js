@@ -60,7 +60,7 @@ function update(timeAll)
 }
 function startNew()
 {
-	const week1 = 10000;//604800000;
+	const week1 = 604800000;
 	const mean = 7 * week1 //7 недель.
 	const sigma = week1 / 1.644853627; //90% Интервал.
 
