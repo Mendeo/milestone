@@ -51,7 +51,7 @@ p
 .progress
 {
 	width: var(--progress_width);
-	height: calc(var(--progress_width) * 0.04);
+	height: calc(var(--progress_width) * 0.025);
 	border: 2px solid black ;
 	padding: calc(var(--progress_width) * 0.002);
 }
