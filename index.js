@@ -37,8 +37,6 @@ let _startDate = null;
 let _endDate = null;
 let _percent = 0;
 
-console.log(nextDay());
-
 if (location.search)
 {
 	const params = location.search.slice(1).split('&');
