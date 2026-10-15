@@ -55,8 +55,7 @@ if (location.search)
 	}
 	_startDate = new Date(startTime);
 	_endDate = new Date(endTime);
-	localStorage.setItem('start_date', _startDate);
-	localStorage.setItem('end_date', _endDate);
+	saveToLocalStorage();
 	location.replace(location.origin);
 	setNewDate();
 }
@@ -82,11 +81,13 @@ new Calendar('#select_new_date_bt',
 			_startDate = new Date();
 			_endDate = new Date(self.context.selectedDates[0]);
 			setTimeToEndDate(self.context.selectedTime);
+			saveToLocalStorage();
 			setNewDate();
 		},
 		onChangeTime: (self) =>
 		{
 			setTimeToEndDate(self.context.selectedTime);
+			saveToLocalStorage();
 			setNewDate();
 		}
 	}).init();
@@ -112,6 +113,12 @@ setInterval(() =>
 {
 	update();
 }, 1000);
+
+function saveToLocalStorage()
+{
+	localStorage.setItem('start_date', _startDate);
+	localStorage.setItem('end_date', _endDate);
+}
 
 function setNewDate()
 {
@@ -175,9 +182,7 @@ function startNew()
 	updateEndDate();
 	updateProgress();
 	createMilestouneLink();
-
-	localStorage.setItem('start_date', _startDate);
-	localStorage.setItem('end_date', _endDate);
+	saveToLocalStorage();
 }
 function updateEndDate()
 {
