@@ -81,23 +81,26 @@ new Calendar('#select_new_date_bt',
 		{
 			_startDate = new Date();
 			_endDate = new Date(self.context.selectedDates[0]);
-			_endDate.setHours(0);
-			_endDate.setMinutes(0);
-			_endDate.setSeconds(0);
-			_endDate.setMilliseconds(0);
+			setTimeToEndDate(self.context.selectedTime);
 			setNewDate();
 		},
 		onChangeTime: (self) =>
 		{
-			const time = self.context.selectedTime.split(':');
-			_endDate = new Date(self.context.selectedDates[0]);
-			_endDate.setHours(Number(time[0]));
-			_endDate.setMinutes(Number(time[1]));
-			_endDate.setSeconds(0);
-			_endDate.setMilliseconds(0);
+			setTimeToEndDate(self.context.selectedTime);
 			setNewDate();
 		}
 	}).init();
+
+function setTimeToEndDate(timeString)
+{
+	const time = timeString.split(':');
+	const hours = Number(time[0]);
+	const minutes = Number(time[1]);
+	_endDate.setHours(isNaN(hours) ? 0 : hours);
+	_endDate.setMinutes(isNaN(minutes) ? 0 : minutes);
+	_endDate.setSeconds(0);
+	_endDate.setMilliseconds(0);
+}
 
 milestouneLinkButton.addEventListener('click', () =>
 {
