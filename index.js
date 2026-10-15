@@ -1,21 +1,46 @@
-'use strict';
+/*
+The MIT License (MIT)
+
+Copyright (c) Aleksandr Meniailo, Mendeo 2026 (thesolve@mail.ru, deorathemen@gmail.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+В проекте для выбора даты используется календарь https://github.com/uvarov-frontend/vanilla-calendar-pro
+Файл лицензии: vanilla-calendar-pro/LICENSE
+ */
+import { Calendar, motion, time } from './vanilla-calendar-pro/index.mjs';
+
 const timerElement = document.getElementById('timer');
 const endDateElement = document.getElementById('end_date');
 const progressElement = document.querySelector('#progress .progress__line');
 const progressValueElement = document.querySelector('#progress .progress__line span');
 const milestouneLinkButton = document.getElementById('copy_milestone_link');
 
-let endTime = 0;
-let startTime = 0;
-let timeAll = 0;
-let percent = 0;
-let startDate = null;
-let endDate = null;
-let milestouneLink = '';
+let _milestouneLink = null;
+let _startDate = null;
+let _endDate = null;
+let _percent = 0;
 
 if (location.search)
 {
 	const params = location.search.slice(1).split('&');
+	let startTime, endTime;
 	for (let pp of params)
 	{
 		const p = pp.split('=');
@@ -28,57 +53,95 @@ if (location.search)
 			endTime = Number(p[1]) * 1000;
 		}
 	}
-	startDate = new Date(startTime);
-	endDate = new Date(endTime);
-	localStorage.setItem('start_date', startDate);
-	localStorage.setItem('end_date', endDate);
+	_startDate = new Date(startTime);
+	_endDate = new Date(endTime);
+	localStorage.setItem('start_date', _startDate);
+	localStorage.setItem('end_date', _endDate);
 	location.replace(location.origin);
+	setNewDate();
 }
 else
 {
-	endDate = localStorage.getItem('end_date');
-	startDate = localStorage.getItem('start_date');
+	_startDate = new Date(localStorage.getItem('start_date'));
+	_endDate = new Date(localStorage.getItem('end_date'));
+	setNewDate();
 }
 
-if (startDate && endDate)
-{
-	startDate = new Date(startDate);
-	endDate = new Date(endDate);
-	startTime = startDate.getTime();
-	endTime = endDate.getTime();
-	timeAll = endTime - startTime;
-	percent = Math.round((Date.now() - startTime) * 1000 / timeAll) / 10;
-
-	if (endTime - Date.now() < 0)
+new Calendar('#select_new_date_bt',
 	{
-		startNew();
-	}
-	else
-	{
-		updateEndDate(endDate);
-		updateProgress(percent);
-		createMilestouneLink(startTime, endTime);
-	}
-}
-else
-{
-	startNew();
-}
+		extensions: [motion, time],
+		animation: true,
+		selectionTimeMode: 24,
+		inputMode: true,
+		positionToInput: 'auto',
+		locale: 'ru-RU',
+		dateMin: Date.now(),
+		selectedTheme: 'light',
+		onClickDate: (self) =>
+		{
+			_startDate = new Date();
+			_endDate = new Date(self.context.selectedDates[0]);
+			_endDate.setHours(0);
+			_endDate.setMinutes(0);
+			_endDate.setSeconds(0);
+			_endDate.setMilliseconds(0);
+			setNewDate();
+		},
+		onChangeTime: (self) =>
+		{
+			const time = self.context.selectedTime.split(':');
+			_endDate = new Date(self.context.selectedDates[0]);
+			_endDate.setHours(Number(time[0]));
+			_endDate.setMinutes(Number(time[1]));
+			_endDate.setSeconds(0);
+			_endDate.setMilliseconds(0);
+			setNewDate();
+		}
+	}).init();
 
 milestouneLinkButton.addEventListener('click', () =>
 {
-	navigator.clipboard.writeText(milestouneLink);
+	navigator.clipboard.writeText(_milestouneLink);
 });
 
-update(timeAll);
+update();
 setInterval(() =>
 {
-	update(timeAll);
+	update();
 }, 1000);
 
-function update(timeAll)
+function setNewDate()
 {
+	if (_startDate && _endDate)
+	{
+		let startTime = _startDate.getTime();
+		let endTime = _endDate.getTime();
+		let timeAll = endTime - startTime;
+
+		if (endTime - Date.now() < 0)
+		{
+			startNew();
+		}
+		else
+		{
+			_percent = Math.round((Date.now() - startTime) * 1000 / timeAll) / 10;
+			updateProgress();
+			updateEndDate();
+			createMilestouneLink();
+		}
+	}
+	else
+	{
+		startNew();
+	}
+}
+
+function update()
+{
+	let startTime = _startDate.getTime();
+	let endTime = _endDate.getTime();
 	let timePassed = Date.now() - startTime;
+	let timeAll = endTime - startTime;
 	if (timePassed > timeAll)
 	{
 		startNew();
@@ -86,48 +149,47 @@ function update(timeAll)
 	}
 	timerElement.innerText = msToString(timeAll - timePassed);
 	const currentPercent = timePassed * 100 / timeAll;
-	if (currentPercent - percent >= 0.1)
+	if (currentPercent - _percent >= 0.1)
 	{
-		percent = Math.round(currentPercent * 10) / 10;
-		updateProgress(percent);
+		_percent = Math.round(currentPercent * 10) / 10;
+		updateProgress();
 	}
 }
 function startNew()
 {
 	const week1 = 604800000;
-	const mean = 7 * week1 //7 недель.
+	const mean = 7 * week1; //7 недель.
 	const sigma = week1 / 1.644853627; //90% Интервал.
 
-	timeAll = getNormalDistr(mean, sigma);
+	let timeAll = getNormalDistr(mean, sigma);
 	timeAll = Math.floor(timeAll / 1000, 0) * 1000;
-	startTime = Date.now();
-	startTime = Math.floor(startTime / 1000, 0) * 1000;
-	endTime = startTime + timeAll;
-	startDate = new Date(startTime);
-	endDate = new Date(endTime);
-	percent = 0;
-	
-	updateEndDate(endDate);
-	updateProgress(percent);
-	createMilestouneLink(startTime, endTime);
-	
-	localStorage.setItem('start_date', startDate);
-	localStorage.setItem('end_date', endDate);
+	let startTime = Math.floor(Date.now() / 1000, 0) * 1000;
+	let endTime = startTime + timeAll;
+	_startDate = new Date(startTime);
+	_endDate = new Date(endTime);
+	_percent = 0;
+
+	updateEndDate();
+	updateProgress();
+	createMilestouneLink();
+
+	localStorage.setItem('start_date', _startDate);
+	localStorage.setItem('end_date', _endDate);
 }
-function updateEndDate(endDate)
+function updateEndDate()
 {
-	endDateElement.innerText = endDate.toLocaleString('ru-RU', { weekday: 'long', year:'numeric', month:'long', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' });
+	endDateElement.innerText = _endDate.toLocaleString('ru-RU', { weekday: 'long', year: 'numeric', month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
-function updateProgress(percent)
+function updateProgress()
 {
-	progressElement.style.width = `${100 - percent}%`;
-	let percentStr = percent.toString();
+	progressElement.style.width = `${100 - _percent}%`;
+	let percentStr = _percent.toString();
 	percentStr = percentStr.indexOf('.') !== -1 ? percentStr.replace('.', ',') + '%' : percentStr + ',0%';
 	progressValueElement.innerText = percentStr;
 }
-function createMilestouneLink(startTime, endTime)
+function createMilestouneLink()
 {
-	milestouneLink = `${location.origin}?s=${startTime / 1000}&e=${endTime / 1000}`;
+	_milestouneLink = `${location.origin}?s=${_startDate.getTime() / 1000}&e=${_endDate.getTime() / 1000}`;
 }
 function msToString(time)
 {

@@ -1,6 +1,9 @@
 *.swp
 *.*~
 *.swo
+.vscode/
 tmp/
 node_modules/
+package.json
+package-lock.json
 test*

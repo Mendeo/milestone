@@ -80,3 +80,11 @@ p
 {
 	margin-bottom: 0.5rem;
 }
+#calendar .calendar__hide
+{
+	display: none;
+}
+#calendar .calendar__show
+{
+	display: flex;
+}

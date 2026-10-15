@@ -3,9 +3,11 @@
 <head>
 	<title>Твоя веха</title>
 	<meta charset="UTF-8">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+	<!--<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">-->
 	<link rel="stylesheet" href="index.css">
 	<link rel="stylesheet" href="ptsansweb/stylesheet.css">
+	<link rel="stylesheet" href="vanilla-calendar-pro/styles/layout.css">
+	<link rel="stylesheet" href="vanilla-calendar-pro/styles/themes/light.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
@@ -23,8 +25,11 @@
 		</div>
 	</div>
 	<div class="empty_space"></div>
-	<button id="copy_milestone_link">Скопировать в буфер ссылку на веху</button>
+	<div>
+		<button id="copy_milestone_link">Скопировать в буфер ссылку на веху</button>
+		<button id="select_new_date_bt">Выбрать другую дату</button>
+	</div>
 	<a href="https://github.com/Mendeo/milestone">Что это?</a>
-	<script type="text/javascript" src="index.js"></script>
+	<script type="module" src="index.js"></script>
 </body>
 </html>
