@@ -37,6 +37,8 @@ let _startDate = null;
 let _endDate = null;
 let _percent = 0;
 
+console.log(nextDay());
+
 if (location.search)
 {
 	const params = location.search.slice(1).split('&');
@@ -74,7 +76,7 @@ new Calendar('#select_new_date_bt',
 		inputMode: true,
 		positionToInput: 'auto',
 		locale: 'ru-RU',
-		dateMin: Date.now(),
+		dateMin: nextDay(),
 		selectedTheme: 'light',
 		onClickDate: (self) =>
 		{
@@ -101,6 +103,17 @@ function setTimeToEndDate(timeString)
 	_endDate.setMinutes(isNaN(minutes) ? 0 : minutes);
 	_endDate.setSeconds(0);
 	_endDate.setMilliseconds(0);
+}
+
+function nextDay()
+{
+	const d = new Date();
+	d.setDate(d.getDate() + 1);
+	d.setHours(0);
+	d.setMinutes(0);
+	d.setSeconds(0);
+	d.setMilliseconds(0);
+	return d;
 }
 
 milestouneLinkButton.addEventListener('click', () =>
